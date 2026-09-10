@@ -162,10 +162,10 @@
     cursor: pointer;
     opacity: 1;
     font-weight: 600;
-    transition: opacity 0.2s;
+    transition: opacity 0.1s;
 
     &:hover {
-      opacity: 0.8;
+      opacity: 0.9;
     }
   }
 
@@ -187,14 +187,21 @@
 
 .itemControls {
   display: flex;
-  align-items: center;
   flex-grow: 1;
-  background-color: var(--bg-color-sec);
 
-  span {
+  input {
     flex-grow: 1;
+    width: 0;
     text-align: center;
     cursor: default;
+    background-color: transparent;
+    border: solid var(--bg-color-sec);
+    border-width: 1px;
+    color: var(--text-color);
+    font-size: var(--text-size);
+    font-family: var(--font-family-1);
+    cursor: text;
+    z-index: 1;
   }
 
   button {
@@ -204,6 +211,25 @@
     color: var(--accent-color);
     font-size: var(--h3-size);
     cursor: pointer;
+    transition: opacity 0.1s;
+
+    &:not(:disabled):hover {
+      opacity: 0.9;
+    }
+
+    &:disabled {
+      background-color: var(--bg-color-sec);
+      color: var(--text-color);
+      cursor: default;
+    }
+
+    &:first-of-type {
+      border-radius: 3px 0 0 3px;
+    }
+
+    &:last-of-type {
+      border-radius: 0 3px 3px 0;
+    }
   }
 }
 
@@ -215,10 +241,15 @@
   cursor: pointer;
   display: grid;
   place-content: center;
+  transition: opacity 0.1s;
 
   svg {
     width: var(--text-size);
     height: auto;
+  }
+
+  &:hover {
+    opacity: 0.9;
   }
 }
 

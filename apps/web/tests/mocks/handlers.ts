@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { CATEGORIES_API_URL } from '@/consts/categoriesApi';
-import { PRODUCT_API_URL } from '@/consts/productApi';
+import { PRODUCT_SLUG_API_URL } from '@/consts/productApi';
 
 export const handlers = [
   http.get(CATEGORIES_API_URL, () => {
@@ -31,7 +31,7 @@ export const handlers = [
       },
     ]);
   }),
-  http.get(`${PRODUCT_API_URL}/product1`, () => {
+  http.get(`${PRODUCT_SLUG_API_URL}/product1`, () => {
     return HttpResponse.json({
       id: crypto.randomUUID(),
       title: 'Product1',

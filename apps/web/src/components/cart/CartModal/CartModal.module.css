@@ -75,6 +75,24 @@
   }
 }
 
+.underContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+
+  button {
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--hover-color);
+    }
+  }
+}
+
 .emptyCart {
   flex-grow: 1;
   display: flex;

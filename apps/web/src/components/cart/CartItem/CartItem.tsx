@@ -21,15 +21,17 @@ export function CartItem({
 }) {
   const [product, setProduct] = useState<Partial<FormattedProduct>>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(true);
   const removeItem = useCartStore((store) => store.removeItem);
 
   useEffect(() => {
     fetchProductById(id)
       .then((res) => {
+        setError(false);
         setProduct(formatProduct(res));
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
+        setError(true);
       })
       .finally(() => {
         setLoading(false);
@@ -54,6 +56,14 @@ export function CartItem({
     product;
 
   const hasDiscount = originalPrice !== price;
+
+  if (error)
+    return (
+      <article className={styles.cartError}>
+        <h3>An unexpected error occurred trying to fetch this product.</h3>
+        <button onClick={() => removeItem(id)}>Delete product</button>
+      </article>
+    );
 
   return (
     <article className={styles.cartItem}>
@@ -107,7 +117,7 @@ export function CartItem({
               <button
                 onClick={() => removeItem(id)}
                 className={styles.trashBtn}
-                aria-label="Delete item"
+                aria-label="Delete product"
               >
                 <Trash />
               </button>

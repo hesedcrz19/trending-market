@@ -27,10 +27,19 @@ export function Header() {
   useLayoutEffect(() => {
     const activeLink = linkRefs.current[location.pathname];
     const nav = navRef.current;
+
+    Object.values(linkRefs.current).forEach((link) => {
+      if (!link) return;
+      link.style.color = 'var(--text-color)';
+    });
+
     if (!activeLink || !nav) {
       setCursorStyle(null);
       return;
     }
+
+    activeLink.style.color = 'var(--accent-color)';
+
     const linkRect = activeLink.getBoundingClientRect();
     const navRect = nav.getBoundingClientRect();
     setCursorStyle({
@@ -60,7 +69,6 @@ export function Header() {
             )}
             {links.map(({ to, label }) => (
               <NavLink
-                className={({ isActive }) => (isActive ? 'active' : '')}
                 key={to}
                 to={to}
                 ref={(el) => {
@@ -90,7 +98,11 @@ export function Header() {
               <ThemeButton buttonClassName="header-theme" />
             </>
           )}
-          <button className="cartBtn" onClick={() => open(CART_MODAL_KEY)} aria-label="Open cart">
+          <button
+            className="cartBtn"
+            onClick={() => open(CART_MODAL_KEY)}
+            aria-label="Open cart modal"
+          >
             <ShoppingCart />
           </button>
         </div>

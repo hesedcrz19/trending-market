@@ -4,10 +4,11 @@ import { useCartStore } from '@/stores/cartStore';
 import { CartToast } from '../CartToast/CartToast';
 import { CartControllers } from '../CartControllers/CartControllers';
 import { Trash } from 'lucide-react';
+import { MAX_CART_QUANTITY } from '@/consts/cartConsts';
 
 type AddToCartButtonProps = {
   id: string;
-  image?: string | null;
+  image: string | null | undefined;
   title: string;
   buttonProps?: ButtonHTMLAttributes<HTMLButtonElement>;
   controlProps?: HTMLAttributes<HTMLDivElement>;
@@ -22,9 +23,15 @@ export function AddToCartButton({
   controlProps,
   deleteBtnProps,
 }: AddToCartButtonProps) {
-  const { addItem, cart, removeItem } = useCartStore();
+  const { addItem, cart, removeItem, cartLength } = useCartStore();
 
   const handleAddToCart = (id: string) => {
+    if (cartLength() >= MAX_CART_QUANTITY) {
+      toast.error('Error, the cart is full', {
+        description: `You can only have maximum ${MAX_CART_QUANTITY} products in your cart.`,
+      });
+      return;
+    }
     addItem(id);
     toast(<CartToast image={image} title={title} />);
   };
@@ -33,7 +40,7 @@ export function AddToCartButton({
     return (
       <>
         <CartControllers {...controlProps} id={id} quantity={cart[id].quantity} />
-        <button {...deleteBtnProps} onClick={() => removeItem(id)}>
+        <button aria-label="Delete product" {...deleteBtnProps} onClick={() => removeItem(id)}>
           <Trash />
         </button>
       </>
@@ -41,7 +48,7 @@ export function AddToCartButton({
 
   return (
     <button {...buttonProps} onClick={() => handleAddToCart(id)}>
-      Add to Cart
+      Add to cart
     </button>
   );
 }

@@ -7,6 +7,8 @@ import { formatProduct } from '@/utils/formatProducts';
 import { ProductCarrousel } from '../ProductCarrousel/ProductCarrousel';
 import { useLocation } from 'react-router';
 import type { FormattedProduct } from '@/types/formattedProduct';
+import { AddToCartButton } from '@/components/cart/AddToCartButton/AddToCartButton';
+import { Star } from 'lucide-react';
 
 export function Product({ slug }: { slug: string | undefined }) {
   const { state } = useLocation() as { state?: { product?: FormattedProduct } };
@@ -18,6 +20,7 @@ export function Product({ slug }: { slug: string | undefined }) {
   const [error, setError] = useState(false);
 
   const {
+    id,
     title,
     category,
     price,
@@ -27,6 +30,7 @@ export function Product({ slug }: { slug: string | undefined }) {
     shippingCost,
     promotion,
     rating,
+    principalImage,
   } = product;
 
   useEffect(() => {
@@ -76,22 +80,32 @@ export function Product({ slug }: { slug: string | undefined }) {
           </div>
 
           <div className={styles.pricesContainer}>
+            <div className={styles.prices}>
+              {originalPrice !== price && (
+                <p className={styles.originalPrice}>
+                  <span className="sr-only">Original price: </span>
+                  {originalPrice}
+                </p>
+              )}
+              <p
+                className={`${styles.price} ${originalPrice !== price ? styles.hasDiscount : ''}`}
+                data-testid="price"
+              >
+                <span className="sr-only">Price: </span>
+                {price ?? <Skeleton width="80px" />}
+              </p>
+            </div>
+
             {(discountPercentage !== 0 || promotion !== null) && (
               <ul className={styles.promos}>
-                {promotion !== null && (
-                  <li className={styles.promotion}>{promotion ?? <Skeleton width="50px" />}</li>
-                )}
-                {discountPercentage !== 0 && (
+                {promotion && <li className={styles.promotion}>{promotion}</li>}
+                {discountPercentage !== 0 && discountPercentage && (
                   <li className={styles.promotion}>
                     {discountPercentage ? `${discountPercentage}% off` : <Skeleton width="50px" />}
                   </li>
                 )}
               </ul>
             )}
-            <div className={styles.prices}>
-              <p className={styles.price}>{price ?? <Skeleton width={100} />}</p>
-              {originalPrice !== price && <p className={styles.originalPrice}>{originalPrice}</p>}
-            </div>
           </div>
 
           <p className={styles.shippingCost}>
@@ -99,10 +113,24 @@ export function Product({ slug }: { slug: string | undefined }) {
           </p>
 
           <footer className={styles.footer}>
-            {loading ? (
-              <Skeleton height={35} borderRadius={10} />
+            {loading || !id ? (
+              <div style={{ flexGrow: 1 }}>
+                <Skeleton height={35} borderRadius={3} />
+              </div>
             ) : (
-              <button className={styles.addToCartButton}>Add to Cart</button>
+              <>
+                <AddToCartButton
+                  id={id}
+                  title={title?.content ?? ''}
+                  image={principalImage}
+                  buttonProps={{ className: styles.addToCartBtn }}
+                  controlProps={{ className: styles.itemControls }}
+                  deleteBtnProps={{ className: styles.deleteBtn }}
+                />
+                <button className={styles.favBtn} aria-label="Add product to favorites">
+                  <Star />
+                </button>
+              </>
             )}
           </footer>
         </div>

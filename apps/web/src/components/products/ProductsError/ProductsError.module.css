@@ -44,7 +44,6 @@
       transition: background-color 0.1s;
 
       svg {
-        fill: var(--text-color);
         height: var(--h3-size);
       }
 

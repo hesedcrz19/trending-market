@@ -209,6 +209,7 @@
 
     input {
       accent-color: var(--primary-color);
+      cursor: pointer;
     }
   }
 }

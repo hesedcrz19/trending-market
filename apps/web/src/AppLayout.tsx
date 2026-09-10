@@ -22,10 +22,11 @@ export function AppLayout() {
 
       <CartModal />
       <Toaster
+        richColors={true}
         toastOptions={{
           style: {
             boxShadow: 'var(--small-shadow)',
-            padding: '8px',
+            padding: '10px',
             backgroundColor: 'var(--bg-color)',
             border: 'none',
             color: 'var(--text-color)',

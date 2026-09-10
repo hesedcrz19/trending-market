@@ -1,30 +1,36 @@
 import type { Cart } from '@/types/cartTypes';
-import type { FormattedProduct } from '@/types/formattedProduct';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { MAX_CART_QUANTITY, MAX_PRODUCT_QUANTITY } from '@/consts/cartConsts';
 
 interface CartStore {
   cart: Cart;
-  cartProducts: FormattedProduct[];
+  cartLength: () => number;
   addItem: (productsId: string) => void;
   removeItem: (productsId: string) => void;
   increaseItem: (productId: string) => void;
   decreaseItem: (productId: string) => void;
+  setQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       cart: {},
-      cartProducts: [],
+      cartLength: () => Object.keys(get().cart).length,
       addItem: (productId) =>
-        set((store) => ({
-          cart: {
-            ...store.cart,
-            [productId]: { quantity: (store.cart[productId]?.quantity ?? 0) + 1 },
-          },
-        })),
+        set(({ cart, cartLength }) => {
+          if (cartLength() >= MAX_CART_QUANTITY) return {};
+          return {
+            cart: {
+              ...cart,
+              [productId]: {
+                quantity: Math.min((cart[productId]?.quantity ?? 0) + 1, MAX_PRODUCT_QUANTITY),
+              },
+            },
+          };
+        }),
       removeItem: (productId) =>
         set((store) => {
           const newCart = { ...store.cart };
@@ -35,7 +41,9 @@ export const useCartStore = create<CartStore>()(
         set((store) => ({
           cart: {
             ...store.cart,
-            [productId]: { quantity: (store.cart[productId]?.quantity ?? 0) + 1 },
+            [productId]: {
+              quantity: Math.min((store.cart[productId]?.quantity ?? 0) + 1, MAX_PRODUCT_QUANTITY),
+            },
           },
         })),
       decreaseItem: (productId) =>
@@ -46,12 +54,22 @@ export const useCartStore = create<CartStore>()(
           if (!productQuantity || productQuantity <= 1) {
             delete newCart[productId];
           } else {
-            newCart[productId].quantity = productQuantity - 1;
+            newCart[productId].quantity = Math.min(productQuantity - 1, MAX_PRODUCT_QUANTITY);
           }
-          return {
-            cart: newCart,
-          };
+          return { cart: newCart };
         }),
+      setQuantity: (productId, quantity) => {
+        set((store) => {
+          const newCart = { ...store.cart };
+
+          if (Number.isNaN(quantity) || quantity < 1) {
+            delete newCart[productId];
+          } else {
+            newCart[productId].quantity = Math.min(Math.floor(quantity), MAX_PRODUCT_QUANTITY);
+          }
+          return { cart: newCart };
+        });
+      },
       clearCart: () => set(() => ({ cart: {} })),
     }),
     {

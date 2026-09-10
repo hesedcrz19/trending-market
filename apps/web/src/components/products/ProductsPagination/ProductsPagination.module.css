@@ -4,6 +4,10 @@
   align-items: center;
   gap: 8px;
 
+  a:hover {
+    opacity: 0.9;
+  }
+
   a,
   span {
     background-color: var(--bg-color-sec);

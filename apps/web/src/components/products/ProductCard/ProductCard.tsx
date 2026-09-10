@@ -102,7 +102,7 @@ export function ProductCard({ product, loading }: ProductCardProps) {
         <footer className={styles.footer}>
           {loading || !id ? (
             <div style={{ flexGrow: 1 }}>
-              <Skeleton style={{ flexGrow: 1 }} height={'100%'} />
+              <Skeleton height={'100%'} />
             </div>
           ) : (
             <>

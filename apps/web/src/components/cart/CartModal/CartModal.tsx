@@ -2,12 +2,13 @@ import styles from './CartModal.module.css';
 import emptyCartImg from '@/assets/images/cart-empty.webp';
 import { useModal } from '@/hooks/useModal';
 import { useCartStore } from '@/stores/cartStore';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { useModalContext } from '@/context/ModalContext';
 import { createPortal } from 'react-dom';
 import { CartItem } from '../CartItem/CartItem';
 import { motion, stagger, type Variants } from 'motion/react';
+import { formatPrice } from '@/utils/formatPrice';
 
 export const CART_MODAL_KEY = 'cartModal';
 
@@ -32,6 +33,7 @@ const dialogVariants: Variants = {
 export function CartModal() {
   const [total, setTotal] = useState<Record<string, number>>({});
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   const modalControls = useModal({
     dialogRef,
     autoClose: true,
@@ -40,14 +42,14 @@ export function CartModal() {
   });
   const { addModalControls } = useModalContext();
   const cart = useCartStore((store) => store.cart);
+  const cartLength = useCartStore((store) => store.cartLength);
+  const clearCart = useCartStore((store) => store.clearCart);
 
   useEffect(() => {
     addModalControls(CART_MODAL_KEY, modalControls);
   }, [addModalControls, modalControls]);
 
   const { close, isOpening, startClosing } = modalControls;
-
-  const cartLength = Object.keys(cart).length;
 
   return createPortal(
     <motion.dialog
@@ -60,7 +62,7 @@ export function CartModal() {
         if (variant === 'close') close();
       }}
     >
-      <section className={styles.dialogFlex}>
+      <section className={styles.dialogFlex} aria-labelledby={titleId}>
         <button
           aria-label="Close cart modal"
           className={styles.closeBtn}
@@ -69,9 +71,9 @@ export function CartModal() {
           <X />
         </button>
 
-        <h2>Products Cart ({cartLength})</h2>
+        <h2 id={titleId}>Products Cart ({cartLength()})</h2>
 
-        {cartLength ? (
+        {cartLength() ? (
           <ul className={styles.itemsList}>
             {Object.entries(cart).map(([id, item]) => (
               <li key={id} className={styles.itemContainer}>
@@ -84,11 +86,14 @@ export function CartModal() {
           <EmptyCart />
         )}
 
-        <p className={styles.total}>
-          {cartLength
-            ? `Total: ${Object.values(total).reduce((prev, curr) => prev + curr, 0)}`
-            : ''}
-        </p>
+        {cartLength() > 0 && (
+          <div className={styles.underContainer}>
+            <p className={styles.total}>
+              {`Total: ${formatPrice(Object.values(total).reduce((prev, curr) => prev + curr, 0))}`}
+            </p>
+            <button onClick={clearCart}>Clear cart</button>
+          </div>
+        )}
       </section>
     </motion.dialog>,
     document.body

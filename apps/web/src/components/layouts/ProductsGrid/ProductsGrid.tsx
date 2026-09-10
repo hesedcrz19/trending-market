@@ -25,7 +25,7 @@ export function ProductsGrid({ products, loading, error }: ProductsGridProps) {
 
 function ProductsCards({ products, loading }: { products: FormattedProduct[]; loading: boolean }) {
   if (loading)
-    return Array.from({ length: 24 }).map((_, i) => (
+    return Array.from({ length: 12 }).map((_, i) => (
       <ProductCard key={i} product={{}} loading={loading} />
     ));
 

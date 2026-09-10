@@ -7,17 +7,17 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  max-width: 140px;
 
   img {
     height: 140px;
     aspect-ratio: 1/1;
+    border-radius: 3px;
+    user-select: none;
   }
 
   .itemControls {
     display: flex;
-    border-radius: 3px;
-    overflow: clip;
-    background-color: var(--bg-color-sec);
 
     button {
       flex: 1;
@@ -26,15 +26,30 @@
       cursor: pointer;
       color: var(--accent-color);
       font-size: var(--h3-size);
+      user-select: none;
 
-      &:hover {
+      &:not(:disabled):hover {
         opacity: 0.8;
+      }
+
+      &:disabled {
+        background-color: var(--bg-color-sec);
+        color: var(--text-color);
+        cursor: default;
       }
     }
 
-    span {
-      flex: 1;
+    input {
+      flex: 2;
       text-align: center;
+      width: 0;
+      background-color: transparent;
+      border: solid var(--bg-color-sec);
+      border-width: 1px 0;
+      color: var(--text-color);
+      font-size: var(--text-size);
+      font-family: var(--font-family-1);
+      z-index: 1;
     }
   }
 }
@@ -129,6 +144,37 @@
         height: auto;
         width: var(--text-size);
       }
+    }
+  }
+}
+
+.cartError {
+  background-color: #fecaca;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  h3 {
+    font-size: var(--text-size);
+    font-weight: 500;
+    color: #333;
+    text-wrap: balance;
+  }
+
+  button {
+    margin-left: auto;
+    color: #333;
+    font-size: var(--text-size);
+    border: 1px solid #333;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity 0.1s;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

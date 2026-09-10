@@ -8,7 +8,7 @@ import { useCategoriesStore } from '@/stores/categoriesStore';
 import { motion, stagger, type Variants } from 'motion/react';
 import { CategoryLink } from '../../categories/CategoryLink/CategoryLink';
 import { AllProductsLink } from '../../products/AllProductsLink/AllProductsLink';
-import { House, Info, ShoppingBag, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { House, Info, ShoppingBag, User, Menu, X, Star } from 'lucide-react';
 
 const dialogVariants: Variants = {
   close: {
@@ -204,7 +204,7 @@ export function MenuButton() {
             </motion.li>
             <motion.li variants={optionsVariants}>
               <button className={styles.cart}>
-                <ShoppingCart />
+                <Star />
               </button>
             </motion.li>
             <motion.li variants={optionsVariants}>
