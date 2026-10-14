@@ -1,7 +1,11 @@
 import type { Cart } from '@/types/cartTypes';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { MAX_CART_QUANTITY, MAX_PRODUCT_QUANTITY } from '@/consts/cartConsts';
+import {
+  MAX_CART_QUANTITY,
+  MAX_PRODUCT_QUANTITY,
+  persistedCartSchema,
+} from '@trending-market/shared';
 
 interface CartStore {
   cart: Cart;
@@ -31,12 +35,14 @@ export const useCartStore = create<CartStore>()(
             },
           };
         }),
+
       removeItem: (productId) =>
         set((store) => {
           const newCart = { ...store.cart };
           delete newCart[productId];
           return { cart: newCart };
         }),
+
       increaseItem: (productId) =>
         set((store) => ({
           cart: {
@@ -46,6 +52,7 @@ export const useCartStore = create<CartStore>()(
             },
           },
         })),
+
       decreaseItem: (productId) =>
         set((store) => {
           const productQuantity = store.cart[productId]?.quantity;
@@ -58,6 +65,7 @@ export const useCartStore = create<CartStore>()(
           }
           return { cart: newCart };
         }),
+
       setQuantity: (productId, quantity) => {
         set((store) => {
           const newCart = { ...store.cart };
@@ -70,10 +78,23 @@ export const useCartStore = create<CartStore>()(
           return { cart: newCart };
         });
       },
+
       clearCart: () => set(() => ({ cart: {} })),
     }),
     {
       name: 'cart-storage',
+      merge: (persistedState, currentState) => {
+        const result = persistedCartSchema.safeParse(persistedState);
+
+        if (!result.success) {
+          return currentState;
+        }
+
+        return {
+          ...currentState,
+          cart: result.data.cart,
+        };
+      },
       version: 1,
       partialize: (state) => ({ cart: state.cart }),
     }

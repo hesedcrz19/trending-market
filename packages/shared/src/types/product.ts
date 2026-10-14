@@ -1,4 +1,5 @@
 import type { Category } from './category.js';
+import { PROMOTIONS } from '../consts/promotions.js';
 
 export interface Product {
   id: string;
@@ -8,7 +9,7 @@ export interface Product {
   originalPrice: number;
   discount: number;
   discountPercentage: number;
-  promotion: string | null;
+  promotion: (typeof PROMOTIONS)[number] | null;
   shippingCost: number;
   rating: number;
   description: string;
