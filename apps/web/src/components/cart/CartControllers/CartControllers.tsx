@@ -1,4 +1,4 @@
-import { MAX_PRODUCT_QUANTITY } from '@/consts/cartConsts';
+import { MAX_PRODUCT_QUANTITY } from '@trending-market/shared';
 import { useCartStore } from '@/stores/cartStore';
 import {
   useRef,

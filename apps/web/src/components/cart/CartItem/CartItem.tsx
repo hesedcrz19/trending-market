@@ -2,13 +2,15 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import Skeleton from 'react-loading-skeleton';
 import imgFallback from '@/assets/images/fallback.png';
 import styles from './CartItem.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useCartStore } from '@/stores/cartStore';
 import { fetchProductById } from '@/services/fetchProductsById';
 import type { FormattedProduct } from '@/types/formattedProduct';
 import { formatProduct } from '@/utils/formatProducts';
 import { CartControllers } from '../CartControllers/CartControllers';
 import { Star, Trash } from 'lucide-react';
+import { applyPromotion } from '@/utils/applyPromotion';
+import { formatPrice } from '@/utils/formatPrice';
 
 export function CartItem({
   id,
@@ -38,10 +40,16 @@ export function CartItem({
       });
   }, [id]);
 
-  useEffect(() => {
-    if (!product.numericPrice) return;
+  const { principalImage, title, promotion, price, originalPrice, shippingCost, numericPrice } =
+    product;
 
-    setTotal((prev) => ({ ...prev, [id]: (product.numericPrice ?? 0) * quantity }));
+  const totalPrice = useMemo(
+    () => applyPromotion(product.numericPrice ?? 0, quantity, product.promotion ?? null),
+    [product.numericPrice, product.promotion, quantity]
+  );
+
+  useEffect(() => {
+    setTotal((prev) => ({ ...prev, [id]: totalPrice }));
 
     return () => {
       setTotal((prev) => {
@@ -50,10 +58,7 @@ export function CartItem({
         return newValue;
       });
     };
-  }, [product.numericPrice, quantity, setTotal, id]);
-
-  const { principalImage, title, promotion, price, originalPrice, shippingCost, numericPrice } =
-    product;
+  }, [totalPrice, setTotal, id]);
 
   const hasDiscount = originalPrice !== price;
 
@@ -106,7 +111,7 @@ export function CartItem({
 
         <div className={styles.footer}>
           <p className={styles.total}>
-            {numericPrice ? `Total: $${(numericPrice ?? 0) * quantity}` : <Skeleton width={100} />}
+            {numericPrice ? `Total: ${formatPrice(totalPrice)}` : <Skeleton width={100} />}
           </p>
 
           {!loading && (

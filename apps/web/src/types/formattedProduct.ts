@@ -1,4 +1,5 @@
 import type { ShorterText } from '@/utils/shortenText';
+import type { PROMOTIONS } from '@trending-market/shared';
 
 export interface FormattedProduct {
   id: string;
@@ -10,7 +11,7 @@ export interface FormattedProduct {
   originalPrice: string;
   discountPercentage: number;
   shippingCost: { cost: string; text: string };
-  promotion: string | null;
+  promotion: (typeof PROMOTIONS)[number] | null;
   principalImage: string | null;
   images: string[];
   category: {

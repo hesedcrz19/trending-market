@@ -4,7 +4,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { CartToast } from '../CartToast/CartToast';
 import { CartControllers } from '../CartControllers/CartControllers';
 import { Trash } from 'lucide-react';
-import { MAX_CART_QUANTITY } from '@/consts/cartConsts';
+import { MAX_CART_QUANTITY } from '@trending-market/shared';
 
 type AddToCartButtonProps = {
   id: string;
@@ -28,7 +28,7 @@ export function AddToCartButton({
   const handleAddToCart = (id: string) => {
     if (cartLength() >= MAX_CART_QUANTITY) {
       toast.error('Error, the cart is full', {
-        description: `You can only have maximum ${MAX_CART_QUANTITY} products in your cart.`,
+        description: `You can have a maximum of ${MAX_CART_QUANTITY} products in your cart.`,
       });
       return;
     }

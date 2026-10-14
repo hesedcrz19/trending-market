@@ -1,5 +1,5 @@
 import z from 'zod';
-import { PROMOTIONS } from '../../const/promotions.js';
+import { PROMOTIONS } from '@trending-market/shared';
 import type { Category } from '@trending-market/shared';
 import { categories } from '@/data/categories.js';
 
